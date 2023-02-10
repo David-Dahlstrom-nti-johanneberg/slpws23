@@ -24,7 +24,7 @@ post('/login') do
     if BCrypt::Password.new(password_digest) == password
       session[:username] = username
       session[:user_id] = user_id
-      redirect('/temporary') #DONT FORGET TO CHANGE ME
+      redirect('/toilets') #DONT FORGET TO CHANGE ME
     else
       redirect('/error')
     end
@@ -46,6 +46,23 @@ get('/error')do
     slim(:error)
 end 
 
-get('/temporary')do
-    slim(:temporary)
+get('/toilets')do
+  toilets = db.execute("SELECT * FROM toilets")
+  slim(:'toilets/index', locals:{toilets:toilets})
+end
+
+post('/toilets/add') do
+  db.execute("INSERT INTO toilets (name) VALUES (?)",params[:toilet])
+  redirect('/toilets')
+end
+
+get('/toilets/:id')do
+  id = params[:id]
+  posts = db.execute("SELECT * FROM posts WHERE toilet_id=?", id)
+  slim(:'toilets/show', locals:{posts:posts})
+end
+
+post('toilets/:id/add')do
+  db.execute("INSERT INTO posts (text, rating, toilet_id, user_id) VALUES(?, ?, ?, ?)",params[:text], params[:rating], params[:id], session[:user_id]).
+  redirect(:'toilet/show')
 end

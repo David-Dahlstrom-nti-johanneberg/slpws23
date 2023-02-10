@@ -1,0 +1,12 @@
+h1 #{id}
+
+form action="/toilets/:id/add" method="post"
+    input type='text' name='text' value='text' placeholder='new review'/
+    input type='number' name='rating' value='rating' placeholder='rating 1-5'/
+    input type='submit' name='submit' value='submit'/
+
+ul 
+    -for post in posts 
+        p #{posts[rating]}
+            br #{posts[text]}
+                br #{posts[user_id]}
