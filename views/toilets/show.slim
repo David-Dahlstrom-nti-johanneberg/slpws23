@@ -12,10 +12,26 @@ form action="/toilets/#{id}/add" method="post"
     label for="4" 4
     input type='radio' id="5" name='rating' value="5"
     label for="5" 5
-    input type='submit' name='submit' value='submit'/
+    input type='submit' name='post' value='submit'/
 
 ul 
     -for post in posts 
-        p #{posts[rating]}
-            br #{posts[text]}
-                br #{posts[user_id]}
+        p rating: #{post["rating"]} | post: #{post["text"]} | by #{post["name"]}
+
+        -if session[:user_id] == post["user_id"]
+            form action='/toilets/#{id}/#{post["post_id"]}/update' method="post"
+                input type='text' name='new_text' placeholder='edit post'/
+                input type='radio' id="1" name='new_rating' value="1"
+                label for="1" 1
+                input type='radio' id="2" name='new_rating' value="2"
+                label for="2" 2
+                input type='radio' id="3" name='new_rating' value="3"
+                label for="3" 3
+                input type='radio' id="4" name='new_rating' value="4"
+                label for="4" 4
+                input type='radio' id="5" name='new_rating' value="5"
+                label for="5" 5
+                input type='submit' name='update' value='submit'/
+            form action='/toilets/#{id}/#{post["post_id"]}/delete' method="post"
+                input type="submit" value="delete post" name='delete post'/
+            

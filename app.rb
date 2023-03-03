@@ -60,13 +60,23 @@ end
 get('/toilets/:id') do
   valid_user()
   id = params[:id]
-  posts = db.execute("SELECT * FROM posts WHERE toilet_id=?", id)
+  posts = db.execute("SELECT * FROM posts INNER JOIN users ON posts.user_id = users.user_id WHERE toilet_id=?", id)
   toilet = db.execute("SELECT name FROM toilets WHERE toilet_id=?", id).first
   slim(:'toilets/show', locals:{posts:posts, id:id, toilet:toilet})
 end
 
 post('/toilets/:id/add') do
-  db.execute("INSERT INTO posts (text, rating, toilet_id, user_id) VALUES(?, ?, ?, ?)",params[:text], params[:rating].to_i, params[:id], session[:user_id])
+  db.execute("INSERT INTO posts (text, rating, toilet_id, user_id) VALUES (?, ?, ?, ?)",params[:text], params[:rating].to_i, params[:id], session[:user_id])
+  redirect("/toilets/#{params[:id]}")
+end
+
+post('/toilets/:id/:post_id/update')do
+  db.execute("UPDATE posts SET text = ?, rating = ? WHERE post_id = ?",params[:new_text], params[:new_rating].to_i, params[:post_id])
+  redirect("/toilets/#{params[:id]}")
+end
+
+post('/toilets/:id/:post_id/delete')do
+  db.execute("DELETE FROM posts WHERE post_id = ?", params[:post_id])
   redirect("/toilets/#{params[:id]}")
 end
 
