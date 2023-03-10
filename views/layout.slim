@@ -6,4 +6,9 @@ html lang="en"
         meta name="viewport" content="width=device-width, initial-scale=1.0"/
         title Document
     body
-     == yield
+        h2 
+            a href="/toilets"  Home
+        == yield
+
+        form action='/logout' method="post"
+                input type="submit" value="log out" name='log out'/

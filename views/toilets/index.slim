@@ -1,5 +1,5 @@
 form action="/toilets/add" method="post" 
-    input type='text' name='toilet' value='toilet' placeholder = 'new toilet'
+    input type='text' name='toilet' placeholder='new toilet'
     br
     input type='submit' name='submit' value='submit'
     
@@ -9,4 +9,8 @@ h1  Toilets
 ol 
     -for toilet in toilets 
       li 
-        a href="/toilets/#{toilet['toilet_id']}"  #{toilet["name"]}
+        a href="/toilets/#{toilet['toilet_id']}"  #{toilet["name"]} 
+        ul 
+          -for toilet_attribute in toilet_attributes[toilet["name"]] 
+            li 
+              p #{toilet_attribute}

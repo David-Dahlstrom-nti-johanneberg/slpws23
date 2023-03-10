@@ -16,7 +16,7 @@ form action="/toilets/#{id}/add" method="post"
 
 ul 
     -for post in posts 
-        p rating: #{post["rating"]} | post: #{post["text"]} | by #{post["name"]}
+        p rating: #{post["rating"]}/5 | post: #{post["text"]} | by #{post["name"]}
 
         -if session[:user_id] == post["user_id"]
             form action='/toilets/#{id}/#{post["post_id"]}/update' method="post"

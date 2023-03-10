@@ -30,6 +30,11 @@ post('/login') do
     end
   end
 
+post('/logout')do
+  session.clear
+  redirect('/')
+end
+
 get('/register')do
     slim(:register)
 end
@@ -49,7 +54,15 @@ end
 get('/toilets')do
   valid_user()
   toilets = db.execute("SELECT * FROM toilets")
-  slim(:'toilets/index', locals:{toilets:toilets})
+  relations = db.execute("SELECT * FROM ((attribute_toilet_relation INNER JOIN toilets ON attribute_toilet_relation.toilet_id = toilets.toilet_id) INNER JOIN attributes ON attribute_toilet_relation.attibute_id = attributes.attribute_id)")
+  toilet_attributes = Hash.new([])
+  for relation in relations
+    if !toilet_attributes.has_key?(relation["name"])
+      toilet_attributes[relation["name"]]=[]
+    end
+    toilet_attributes[relation["name"]].append(relation["type"])
+  end
+  slim(:'toilets/index', locals:{toilets:toilets, toilet_attributes:toilet_attributes})
 end
 
 post('/toilets/add') do
@@ -71,7 +84,11 @@ post('/toilets/:id/add') do
 end
 
 post('/toilets/:id/:post_id/update')do
-  db.execute("UPDATE posts SET text = ?, rating = ? WHERE post_id = ?",params[:new_text], params[:new_rating].to_i, params[:post_id])
+  if params[:new_text] != ""
+    db.execute("UPDATE posts SET text = ?, rating = ? WHERE post_id = ?",params[:new_text], params[:new_rating].to_i, params[:post_id])
+  else
+    db.execute("UPDATE posts SET rating = ? WHERE post_id = ?", params[:new_rating].to_i, params[:post_id])
+  end
   redirect("/toilets/#{params[:id]}")
 end
 
