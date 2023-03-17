@@ -13,7 +13,7 @@ end
 post('/login') do
     username = params[:username]
     user_id = login_user(username, params[:password])
-    if user_id == nil
+    if !user_id
       redirect('/error')
     end
     session[:username] = username
@@ -59,7 +59,7 @@ end
 
 post('/toilets/:id/add') do
   id = params[:id]
-  new_toilet(params[:text], params[:rating].to_i, id, session[:user_id])
+  new_post(params[:text], params[:rating].to_i, id, session[:user_id])
   redirect("/toilets/#{id}")
 end
 

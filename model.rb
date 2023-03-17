@@ -51,7 +51,7 @@ def get_toilet_by_id(id)
     return[posts, toilet]
 end
 
-def new_review(text, rating, id, user_id)
+def new_post(text, rating, id, user_id)
     db.execute("INSERT INTO posts (text, rating, toilet_id, user_id) VALUES (?, ?, ?, ?)", text, rating, id, user_id)
 end
 
