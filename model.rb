@@ -4,9 +4,10 @@ def valid_user()
     end
 end
 
-def connect_to_db()
-    db = SQLite3::Database.new("db/slpws23_toiletreviews.db")
-    db.results_as_hash = true
+def db
+    database = SQLite3::Database.new("db/slpws23_toiletreviews.db")
+    database.results_as_hash = true
+    return database
 end
 
 def register_user(username, password)

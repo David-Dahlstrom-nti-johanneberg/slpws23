@@ -6,8 +6,6 @@ require 'sinatra/reloader'
 require_relative 'model.rb'
 enable :sessions
 
-connect_to_db()
-
 get('/')do
     slim(:login)
 end
