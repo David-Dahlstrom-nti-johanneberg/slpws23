@@ -1,6 +1,6 @@
-def valid_user()
-    if session[:user_id] == nil
-      redirect('/')
+def valid_user(user_id)
+    if user_id == nil
+      redirect('/error')
     end
 end
 
@@ -28,7 +28,7 @@ def login_user(username, password)
     return user_id
 end
 
-def get_toilets()
+def get_toilets_and_attributes()
     toilets = db.execute("SELECT * FROM toilets")
     relations = db.execute("SELECT * FROM ((attribute_toilet_relation INNER JOIN toilets ON attribute_toilet_relation.toilet_id = toilets.toilet_id) INNER JOIN attributes ON attribute_toilet_relation.attibute_id = attributes.attribute_id)")
     toilet_attributes = Hash.new([])
@@ -38,11 +38,17 @@ def get_toilets()
         end
         toilet_attributes[relation["name"]].append(relation["type"])
     end
-    return [toilets, toilet_attributes]
+    all_attributes = db.execute("SELECT * FROM attributes")
+    return [toilets, toilet_attributes, all_attributes]
 end
 
 def new_toilet(new_toilet)
     db.execute("INSERT INTO toilets (name) VALUES (?)",new_toilet)
+end
+
+def add_attributes_to_toilet(toilet)
+    id = db.execute("SELECT toilet_id FROM toilets WHERE name = ?", toilet)
+
 end
 
 def get_toilet_by_id(id)
