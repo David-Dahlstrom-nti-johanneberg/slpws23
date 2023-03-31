@@ -46,9 +46,15 @@ def new_toilet(new_toilet)
     db.execute("INSERT INTO toilets (name) VALUES (?)",new_toilet)
 end
 
-def add_attributes_to_toilet(toilet)
-    id = db.execute("SELECT toilet_id FROM toilets WHERE name = ?", toilet)
-
+def add_attributes_to_toilet(toilet, attributes)
+    id = db.execute("SELECT toilet_id FROM toilets WHERE name = ?", toilet).first
+    for attribute in attributes
+        p"----------------------------------"
+        p id
+        p attribute
+        p"--------------------------------"
+            db.execute("INSERT INTO attribute_toilet_relation (toilet_id, attibute_id) VALUES (?,?)", id["toilet_id"], attribute.to_i)
+    end
 end
 
 def get_toilet_by_id(id)

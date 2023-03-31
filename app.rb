@@ -47,7 +47,10 @@ end
 post('/toilets/add') do
   valid_user(session[:user_id])
   new_toilet(params[:toilet])
-  add_attributes_to_toilet(params[:toilet])
+  toilets, toilet_attributes, all_attributes = get_toilets_and_attributes()
+  # tobias skrev attributes, förstår ish
+  attributes = all_attributes.map {|attribute| attribute["attribute_id"]}.filter {|id| params.has_key?(id.to_s)}
+  add_attributes_to_toilet(params[:toilet], attributes)
   redirect('/toilets')
 end
 
