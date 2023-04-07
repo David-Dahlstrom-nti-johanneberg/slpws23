@@ -81,3 +81,27 @@ post('/toilets/:id/:post_id/delete')do
   delete_post(params[:post_id])
   redirect("/toilets/#{params[:id]}")
 end
+
+get('/users')do
+  if admin_check(session[:user_id]) != "admin"
+    redirect("/toilets")
+  end
+  users = get_users()
+  slim(:'admin_funktions/users/index', locals:{users:users})
+end
+
+post('/users/:id/update')do
+  if admin_check(session[:user_id]) != "admin"
+    redirect("/toilets")
+  end
+  change_role(params[:id])
+  redirect("/users")
+end
+
+post('/users/:id/delete')do
+  if admin_check(session[:user_id]) != "admin"
+    redirect("/toilets")
+  end
+  delete_user(params[:id])
+  redirect("/users")
+end

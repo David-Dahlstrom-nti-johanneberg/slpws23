@@ -10,6 +10,14 @@ def db
     return database
 end
 
+def admin_check(user_id)
+    if user_id == nil
+        return "no"
+    end
+    return db.execute("SELECT role FROM users WHERE user_id = ?", user_id).first["role"]
+end
+
+
 def register_user(username, password)
     password_digest = BCrypt::Password.create(password)
     db.execute('INSERT INTO users (name,password_digest,role ) values (?,?,"user")', username, password_digest)
@@ -49,10 +57,6 @@ end
 def add_attributes_to_toilet(toilet, attributes)
     id = db.execute("SELECT toilet_id FROM toilets WHERE name = ?", toilet).first
     for attribute in attributes
-        p"----------------------------------"
-        p id
-        p attribute
-        p"--------------------------------"
             db.execute("INSERT INTO attribute_toilet_relation (toilet_id, attibute_id) VALUES (?,?)", id["toilet_id"], attribute.to_i)
     end
 end
@@ -77,4 +81,22 @@ def update_post(new_text, new_rating, post_id)
       else
         db.execute("UPDATE posts SET rating = ? WHERE post_id = ?", new_rating, post_id)
       end
+end
+
+def get_users()
+    return db.execute("SELECT * FROM users")
+end
+
+def change_role(id)
+    if admin_check(id) != "admin"
+        role = "admin"
+    else
+        role = "user"
+    end
+        db.execute('UPDATE users SET role = ? WHERE user_id = ?', role, id)
+end
+
+def delete_user(id)
+    db.execute("DELETE FROM posts WHERE user_id = ?", id)
+    db.execute("DELETE FROM users WHERE user_id = ?",id)
 end
