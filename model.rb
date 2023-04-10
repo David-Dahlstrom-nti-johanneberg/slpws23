@@ -100,3 +100,14 @@ def delete_user(id)
     db.execute("DELETE FROM posts WHERE user_id = ?", id)
     db.execute("DELETE FROM users WHERE user_id = ?",id)
 end
+
+def get_1_toilet_and_attributes(id)
+    toilet = db.execute("SELECT * FROM toilets WHERE toilet_id = ?", id).first
+    toilet_attributes = db.execute("SELECT * FROM attribute_toilet_relation INNER JOIN attributes ON attribute_toilet_relation.attibute_id = attributes.attribute_id WHERE toilet_id = ?", id)
+    all_attributes = db.execute("SELECT * FROM attributes")
+    return [toilet, toilet_attributes, all_attributes]
+end
+
+def new_toilet_name(name, id)
+    db.execute("UPDATE toilets SET name = ? WHERE toilet_id = ?",name, id)
+end

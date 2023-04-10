@@ -48,7 +48,6 @@ post('/toilets/add') do
   valid_user(session[:user_id])
   new_toilet(params[:toilet])
   toilets, toilet_attributes, all_attributes = get_toilets_and_attributes()
-  # tobias skrev attributes, förstår ish
   attributes = all_attributes.map {|attribute| attribute["attribute_id"]}.filter {|id| params.has_key?(id.to_s)}
   add_attributes_to_toilet(params[:toilet], attributes)
   redirect('/toilets')
@@ -110,6 +109,24 @@ get('/toilets/:id/edit')do
   if admin_check(session[:user_id]) != "admin"
     redirect("/toilets")
   end
-  toilets, toilet_attributes, all_attributes = get_1_toilet_and_attributes(params[:id])
-  slim(:'toilets/edit')
+  id = params[:id]
+  toilet, toilet_attributes, all_attributes = get_1_toilet_and_attributes(id)
+  p"--------------------------"
+  p toilet_attributes
+  p"-----------------------------"
+  slim(:'toilets/edit', locals:{toilet:toilet, toilet_attributes:toilet_attributes, all_attributes:all_attributes, id:id})
+end
+
+post('/toilets/:id/update')do
+  if admin_check(session[:user_id]) != "admin"
+    redirect("/toilets")
+  end
+  new_toilet_name(params[:toilet], params[:id])
+  toilet, toilet_attributes, all_attributes = get_1_toilet_and_attributes(params[:id])
+  attributes = (all_attributes.map {|attribute| attribute["attribute_id"]}.filter {|id| params.has_key?(id.to_s)}) - toilet_attributes
+  p"----------------------------"
+  p attributes
+  p"----------------------------"
+  add_attributes_to_toilet(params[:toilet], attributes)
+  redirect("/toilets")
 end

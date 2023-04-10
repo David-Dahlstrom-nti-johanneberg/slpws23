@@ -13,6 +13,8 @@ ol
     -for toilet in toilets 
       li 
         a href="/toilets/#{toilet['toilet_id']}"  #{toilet["name"]} 
+        -if admin_check(session[:user_id]) == "admin"
+          a href="/toilets/#{toilet['toilet_id']}/edit" edit
         ul 
           -for toilet_attribute in toilet_attributes[toilet["name"]] 
             li 

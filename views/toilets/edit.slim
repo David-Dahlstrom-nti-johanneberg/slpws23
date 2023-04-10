@@ -1,9 +1,8 @@
-h1  #{toilet["name"]} 
-     ul 
-          -for toilet_attribute in toilet_attributes[toilet["name"]] 
-            li 
-              p #{toilet_attribute}
-              
+h1  #{toilet["name"]}
+ul
+    -for attribute in toilet_attributes 
+        li #{attribute["type"]}
+
 form action="/toilets/#{id}/update" method="post" 
     input type='text' name='toilet' value='#{toilet["name"]}' placeholder='new toilet name'
      -for attribute in all_attributes 
