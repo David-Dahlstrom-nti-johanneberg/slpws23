@@ -111,3 +111,14 @@ end
 def new_toilet_name(name, id)
     db.execute("UPDATE toilets SET name = ? WHERE toilet_id = ?",name, id)
 end
+
+def delete_attribute_from_toilet(id)
+    db.execute("DELETE FROM attribute_toilet_relation WHERE attribute_toilet_relation_id = ?", id)
+end
+
+def delete_toilet_and_its_posts(id)
+    db.execute("DELETE FROM posts WHERE toilet_id = ?", id)
+    db.execute("DELETE FROM attribute_toilet_relation WHERE toilet_id = ?", id)
+    db.execute("DELETE FROM toilets WHERE toilet_id = ?", id)
+
+end
