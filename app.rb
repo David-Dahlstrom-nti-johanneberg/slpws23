@@ -105,3 +105,11 @@ post('/users/:id/delete')do
   delete_user(params[:id])
   redirect("/users")
 end
+
+get('/toilets/:id/edit')do
+  if admin_check(session[:user_id]) != "admin"
+    redirect("/toilets")
+  end
+  toilets, toilet_attributes, all_attributes = get_1_toilet_and_attributes(params[:id])
+  slim(:'toilets/edit')
+end

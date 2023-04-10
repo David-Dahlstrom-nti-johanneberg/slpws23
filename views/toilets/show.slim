@@ -18,7 +18,7 @@ ul
     -for post in posts 
         p rating: #{post["rating"]}/5 | post: #{post["text"]} | by #{post["name"]}
 
-        -if session[:user_id] == post["user_id"]
+        -if session[:user_id] == post["user_id"] || admin_check(session[:user_id]) == "admin"
             form action='/toilets/#{id}/#{post["post_id"]}/update' method="post"
                 input type='text' name='new_text' placeholder='edit post'/
                 input type='radio' id="1" name='new_rating' value="1"
