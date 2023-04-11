@@ -4,10 +4,20 @@
       -for attribute in all_attributes 
         input type="checkbox" name="#{attribute["attribute_id"]}" value='#{attribute["attribute_id"]}'/
         label for="#{attribute}" #{attribute["type"]}
-      br
       input type='submit' name='submit' value='submit'
-    
-    
+
+-if admin_check(session[:user_id]) == "admin"
+  h2 edit attributes 
+  form action="/attribute/add" method="post" 
+    input type='text' name='type' placeholder='new attribute'
+    input type='submit' name='submit' value='submit'
+  ul
+    -for attributes in all_attributes 
+      li
+        p #{attributes["type"]}
+        form action="/attribute/#{attributes["attribute_id"]}/delete" method="post" 
+          input type="submit" value="delete" name='delete'/
+ 
 h1  Toilets:
 
 ol 

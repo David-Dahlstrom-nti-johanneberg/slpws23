@@ -2,7 +2,7 @@ h1  #{toilet["name"]}
 ul
     -for attribute in toilet_attributes 
         li #{attribute["type"]}
-        form action="/toilets/#{id}/attribute/#{attribute["attribute_toilet_relation_id"]}/delete" method="post" 
+        form action="/toilets/#{id}/attribute_on_toilet/#{attribute["attribute_toilet_relation_id"]}/delete" method="post" 
             input type="submit" value="remove attribute" name='remove attribute'/
 
 form action="/toilets/#{id}/update" method="post" 

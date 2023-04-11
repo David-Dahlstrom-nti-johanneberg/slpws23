@@ -134,7 +134,7 @@ post('/toilets/:id/update')do
   redirect("/toilets")
 end
 
-post('/toilets/:id/attribute/:attribute_toilet_relation_id/delete')do
+post('/toilets/:id/attribute_on_toilet/:attribute_toilet_relation_id/delete')do
   if admin_check(session[:user_id]) != "admin"
     redirect("/toilets")
   end
@@ -148,4 +148,20 @@ post('/toilets/:id/delete')do
   end
   delete_toilet_and_its_posts(params[:id])
   redirect("toilets")
+end
+
+post('/attribute/:id/delete')do
+if admin_check(session[:user_id]) != "admin"
+  redirect("/toilets")
+end
+  delete_attribute(params[:id])
+  redirect('/toilets')
+end
+
+post('/attribute/add')do
+if admin_check(session[:user_id]) != "admin"
+  redirect("/toilets")
+end
+  add_attribute(params[:type])
+  redirect('/toilets')
 end
