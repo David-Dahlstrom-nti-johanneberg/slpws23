@@ -114,9 +114,6 @@ get('/toilets/:id/edit')do
   end
   id = params[:id]
   toilet, toilet_attributes, all_attributes = get_1_toilet_and_attributes(id)
-  p"--------------------------"
-  p toilet_attributes
-  p"-----------------------------"
   slim(:'toilets/edit', locals:{toilet:toilet, toilet_attributes:toilet_attributes, all_attributes:all_attributes, id:id})
 end
 
