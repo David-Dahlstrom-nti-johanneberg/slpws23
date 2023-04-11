@@ -41,6 +41,9 @@ end
 
 get('/toilets')do
   toilets, toilet_attributes, all_attributes = get_toilets_and_attributes()
+  p"-------------------------------"
+  p session[:user_id]
+  p"----------------------"
   slim(:'toilets/index', locals:{toilets:toilets, toilet_attributes:toilet_attributes, all_attributes:all_attributes})
 end
 
@@ -132,14 +135,17 @@ post('/toilets/:id/update')do
 end
 
 post('/toilets/:id/attribute/:attribute_toilet_relation_id/delete')do
-  delete_attribute_from_toilet(params[:attribute_toilet_relation_id])
   if admin_check(session[:user_id]) != "admin"
     redirect("/toilets")
   end
+delete_attribute_from_toilet(params[:attribute_toilet_relation_id])
   redirect("/toilets/#{params[:id]}/edit")
 end
 
 post('/toilets/:id/delete')do
+  if admin_check(session[:user_id]) != "admin"
+    redirect("/toilets")
+  end
   delete_toilet_and_its_posts(params[:id])
   redirect("toilets")
 end
