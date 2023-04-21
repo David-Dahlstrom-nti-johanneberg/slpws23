@@ -22,6 +22,9 @@ post('/login') do
   end
 
 post('/logout')do
+  if valid_user(session[:user_id])
+    redirect('/error')
+  end
   session.clear
   redirect('/')
 end
@@ -41,14 +44,13 @@ end
 
 get('/toilets')do
   toilets, toilet_attributes, all_attributes = get_toilets_and_attributes()
-  p"-------------------------------"
-  p session[:user_id]
-  p"----------------------"
   slim(:'toilets/index', locals:{toilets:toilets, toilet_attributes:toilet_attributes, all_attributes:all_attributes})
 end
 
 post('/toilets/add') do
-  valid_user(session[:user_id])
+  if valid_user(session[:user_id])
+    redirect('/error')
+  end
   new_toilet(params[:toilet])
   toilets, toilet_attributes, all_attributes = get_toilets_and_attributes()
   attributes = all_attributes.map {|attribute| attribute["attribute_id"]}.filter {|id| params.has_key?(id.to_s)}
@@ -66,20 +68,26 @@ get('/toilets/:id') do
 end
 
 post('/toilets/:id/add') do
-  valid_user(session[:user_id])
+  if valid_user(session[:user_id])
+    redirect('/error')
+  end
   id = params[:id]
   new_post(params[:text], params[:rating].to_i, id, session[:user_id])
   redirect("/toilets/#{id}")
 end
 
 post('/toilets/:id/:post_id/update')do
-  valid_user(session[:user_id])
+  if session[:user_id] == post["user_id"] || admin_check(session[:user_id]) == "admin"
+    redirect('/error')
+  end
   update_post(params[:new_text], params[:new_rating].to_i, params[:post_id])
   redirect("/toilets/#{params[:id]}")
 end
 
 post('/toilets/:id/:post_id/delete')do
-  valid_user(session[:user_id])
+  if session[:user_id] == post["user_id"] || admin_check(session[:user_id]) == "admin"
+    redirect('/error')
+  end
   delete_post(params[:post_id])
   redirect("/toilets/#{params[:id]}")
 end

@@ -1,7 +1,5 @@
 def valid_user(user_id)
-    if user_id == nil
-      redirect('/error')
-    end
+    return user_id != nil
 end
 
 def db
