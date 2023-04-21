@@ -38,7 +38,7 @@ end
 
 def get_toilets_and_attributes()
     toilets = db.execute("SELECT * FROM toilets")
-    relations = db.execute("SELECT * FROM ((attribute_toilet_relation INNER JOIN toilets ON attribute_toilet_relation.toilet_id = toilets.toilet_id) INNER JOIN attributes ON attribute_toilet_relation.attibute_id = attributes.attribute_id)")
+    relations = db.execute("SELECT * FROM ((attribute_toilet_relation INNER JOIN toilets ON attribute_toilet_relation.toilet_id = toilets.toilet_id) INNER JOIN attributes ON attribute_toilet_relation.attribute_id = attributes.attribute_id)")
     toilet_attributes = Hash.new([])
     for relation in relations
         if !toilet_attributes.has_key?(relation["name"])
@@ -57,7 +57,7 @@ end
 def add_attributes_to_toilet(toilet, attributes)
     id = db.execute("SELECT toilet_id FROM toilets WHERE name = ?", toilet).first
     for attribute in attributes
-            db.execute("INSERT INTO attribute_toilet_relation (toilet_id, attibute_id) VALUES (?,?)", id["toilet_id"], attribute.to_i)
+            db.execute("INSERT INTO attribute_toilet_relation (toilet_id, attribute_id) VALUES (?,?)", id["toilet_id"], attribute.to_i)
     end
 end
 
@@ -99,4 +99,34 @@ end
 def delete_user(id)
     db.execute("DELETE FROM posts WHERE user_id = ?", id)
     db.execute("DELETE FROM users WHERE user_id = ?",id)
+end
+
+def get_1_toilet_and_attributes(id)
+    toilet = db.execute("SELECT * FROM toilets WHERE toilet_id = ?", id).first
+    toilet_attributes = db.execute("SELECT * FROM attribute_toilet_relation INNER JOIN attributes ON attribute_toilet_relation.attribute_id = attributes.attribute_id WHERE toilet_id = ?", id)
+    all_attributes = db.execute("SELECT * FROM attributes")
+    return [toilet, toilet_attributes, all_attributes]
+end
+
+def new_toilet_name(name, id)
+    db.execute("UPDATE toilets SET name = ? WHERE toilet_id = ?",name, id)
+end
+
+def delete_attribute_from_toilet(id)
+    db.execute("DELETE FROM attribute_toilet_relation WHERE attribute_toilet_relation_id = ?", id)
+end
+
+def delete_toilet_and_its_posts(id)
+    db.execute("DELETE FROM posts WHERE toilet_id = ?", id)
+    db.execute("DELETE FROM attribute_toilet_relation WHERE toilet_id = ?", id)
+    db.execute("DELETE FROM toilets WHERE toilet_id = ?", id)
+end
+
+def add_attribute(type)
+    db.execute("INSERT INTO attributes (type) VALUES (?)", type)
+end
+
+def delete_attribute(id)
+    db.execute("DELETE FROM attribute_toilet_relation WHERE attribute_id = ?", id)
+    db.execute("DELETE FROM attributes WHERE attribute_id = ?", id)
 end

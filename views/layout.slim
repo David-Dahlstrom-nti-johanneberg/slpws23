@@ -14,6 +14,7 @@ html lang="en"
             a href="/register" Register
         -if admin_check(session[:user_id]) == "admin"
             a href="/users" Edit_users
+            br
         br
         == yield
         br

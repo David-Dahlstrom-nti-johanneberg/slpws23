@@ -41,6 +41,9 @@ end
 
 get('/toilets')do
   toilets, toilet_attributes, all_attributes = get_toilets_and_attributes()
+  p"-------------------------------"
+  p session[:user_id]
+  p"----------------------"
   slim(:'toilets/index', locals:{toilets:toilets, toilet_attributes:toilet_attributes, all_attributes:all_attributes})
 end
 
@@ -48,7 +51,6 @@ post('/toilets/add') do
   valid_user(session[:user_id])
   new_toilet(params[:toilet])
   toilets, toilet_attributes, all_attributes = get_toilets_and_attributes()
-  # tobias skrev attributes, förstår ish
   attributes = all_attributes.map {|attribute| attribute["attribute_id"]}.filter {|id| params.has_key?(id.to_s)}
   add_attributes_to_toilet(params[:toilet], attributes)
   redirect('/toilets')
@@ -104,4 +106,59 @@ post('/users/:id/delete')do
   end
   delete_user(params[:id])
   redirect("/users")
+end
+
+get('/toilets/:id/edit')do
+  if admin_check(session[:user_id]) != "admin"
+    redirect("/toilets")
+  end
+  id = params[:id]
+  toilet, toilet_attributes, all_attributes = get_1_toilet_and_attributes(id)
+  slim(:'toilets/edit', locals:{toilet:toilet, toilet_attributes:toilet_attributes, all_attributes:all_attributes, id:id})
+end
+
+post('/toilets/:id/update')do
+  if admin_check(session[:user_id]) != "admin"
+    redirect("/toilets")
+  end
+  new_toilet_name(params[:toilet], params[:id])
+  toilet, toilet_attributes, all_attributes = get_1_toilet_and_attributes(params[:id])
+  attributes = (all_attributes.map {|attribute| attribute["attribute_id"]}.filter {|id| params.has_key?(id.to_s)}) - toilet_attributes
+  p"----------------------------"
+  p attributes
+  p"----------------------------"
+  add_attributes_to_toilet(params[:toilet], attributes)
+  redirect("/toilets")
+end
+
+post('/toilets/:id/attribute_on_toilet/:attribute_toilet_relation_id/delete')do
+  if admin_check(session[:user_id]) != "admin"
+    redirect("/toilets")
+  end
+delete_attribute_from_toilet(params[:attribute_toilet_relation_id])
+  redirect("/toilets/#{params[:id]}/edit")
+end
+
+post('/toilets/:id/delete')do
+  if admin_check(session[:user_id]) != "admin"
+    redirect("/toilets")
+  end
+  delete_toilet_and_its_posts(params[:id])
+  redirect("toilets")
+end
+
+post('/attribute/:id/delete')do
+if admin_check(session[:user_id]) != "admin"
+  redirect("/toilets")
+end
+  delete_attribute(params[:id])
+  redirect('/toilets')
+end
+
+post('/attribute/add')do
+if admin_check(session[:user_id]) != "admin"
+  redirect("/toilets")
+end
+  add_attribute(params[:type])
+  redirect('/toilets')
 end

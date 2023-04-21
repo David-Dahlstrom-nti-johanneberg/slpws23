@@ -1,0 +1,16 @@
+h1  #{toilet["name"]}
+ul
+    -for attribute in toilet_attributes 
+        li #{attribute["type"]}
+        form action="/toilets/#{id}/attribute_on_toilet/#{attribute["attribute_toilet_relation_id"]}/delete" method="post" 
+            input type="submit" value="remove attribute" name='remove attribute'/
+
+form action="/toilets/#{id}/update" method="post" 
+    input type='text' name='toilet' value='#{toilet["name"]}' placeholder='new toilet name'
+     -for attribute in all_attributes 
+      input type="checkbox" name="#{attribute["attribute_id"]}" value='#{attribute["attribute_id"]}'/
+      label for="#{attribute}" #{attribute["type"]}
+    br
+    input type='submit' name='submit' value='submit'
+form action="/toilets/#{id}/delete" method="post" 
+    input type="submit" value="delete toilet and its posts" name='delete toilet and its posts'/
